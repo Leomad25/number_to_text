@@ -8,9 +8,19 @@
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
+		<script src="/numberConverter.js" is:inline />
 		<title>Astro</title>
 	</head>
 	<body>
 		<h1>Astro</h1>
+		<div>
+			<div>
+				<label for="number-input">Ingrese un numero</label>
+				<input type="text" id="number-input"/>
+			</div>
+			<div>
+				<textarea name="number-text" id="number-text"></textarea>
+			</div>
+		</div>
 	</body>
 </html>
