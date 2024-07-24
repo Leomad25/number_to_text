@@ -23,4 +23,16 @@
 			</div>
 		</div>
 	</body>
+	<script is:inline>
+		function addListeners() {
+			document.getElementById('number-input').addEventListener('keyup', function() {
+				console.clear();
+				document.getElementById('number-text').innerText = new NumberConverter(this.value).convert();
+			});
+		}
+
+		document.addEventListener('DOMContentLoaded', function() {
+			addListeners();
+		});
+	</script>
 </html>

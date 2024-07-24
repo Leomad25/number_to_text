@@ -1,12 +1,13 @@
 class NumberConverter {
   constructor(number) {
     this.isNegative = (number >= 0 ? false : true);
-    this.number = Math.abs(number);
+    this.number = this.isNegative ? String(number).slice(1) : number;
 
     this.units = ['', 'un', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve'];
     this.teens = ['diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis'];
     this.tens = ['treinta', 'cuarenta', 'cincuenta', 'sesenta', 'setenta', 'ochenta', 'noventa'];
-    this.scaleSingle = ['millón', 'billón', 'trillón', 'cuatrillón', 'quintillón', 'sextillón', 'septillón', 'octillón', 'nonillón', 'decillón']
+    this.scaleSingle = ['millón', 'billón', 'trillón', 'cuatrillón', 'quintillón', 'sextillón', 'septillón', 'octillón', 'nonillón', 'decillón'];
+    this.scalePlural = ['millones', 'billones', 'trillones', 'cuatrillones', 'quintillones', 'sextillones', 'septillones', 'octillones', 'nonillones', 'decillones'];
     this.especialCases = {
       dieci: 'dieci',
       veinte: 'veinte',
@@ -133,23 +134,29 @@ class NumberConverter {
   }
 
   getScaleText(thousandsGrups) {
-    
+    const scaleData = this.getScaleData(thousandsGrups);
+    let scaleText = '';
+    for(let item of scaleData) {
+      if (scaleText !== '') scaleText += ' ';
+      scaleText += item.convert + (item.scale ? ' ' + item.scale : '');
+    }
+    return this.isNegative ? 'menos ' + scaleText : scaleText;
+  }
+
+  getScaleData(thousandsGrups) {
+    const scaleData = [];
+    let scaleIndex = -1;
+    for(let item of thousandsGrups.reverse()) {
+      let scalaItem = {};
+      scalaItem.convert = this.getGroupText(item);
+      scalaItem.scale = (scaleIndex > -1) ? (scalaItem.convert === this.units[1] ? this.scaleSingle[scaleIndex] : this.scalePlural[scaleIndex]) : undefined;
+      if (scalaItem.convert !== '') scaleData.push(scalaItem);
+      scaleIndex++;
+    }
+    return scaleData.reverse();
   }
 
   convert() {
-    let toText = this.getScaleText(this.splitThousandsGrups(this.number));
-    return toText;
+    return this.getScaleText(this.splitThousandsGrups(this.number));
   }
 }
-
-function addListeners() {
-  document.getElementById('number-input').addEventListener('keyup', function() {
-    const number = this.value;
-    const result = new NumberConverter(number).convert();
-    document.getElementById('number-text').innerText = result;
-  });
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-  addListeners();
-});
