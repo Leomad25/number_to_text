@@ -19,7 +19,7 @@
 				<input type="text" id="number-input"/>
 			</div>
 			<div>
-				<textarea name="number-text" id="number-text"></textarea>
+				<span id="number-text"></span>
 			</div>
 		</div>
 	</body>
@@ -27,7 +27,7 @@
 		function addListeners() {
 			document.getElementById('number-input').addEventListener('keyup', function() {
 				console.clear();
-				document.getElementById('number-text').innerText = new NumberConverter(this.value).convert();
+				document.getElementById('number-text').innerText = new NumberConverter(this.value, true).convert();
 			});
 		}
 
@@ -35,4 +35,5 @@
 			addListeners();
 		});
 	</script>
+	
 </html>

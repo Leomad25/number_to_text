@@ -1,9 +1,10 @@
 class NumberConverter {
-  constructor(number) {
+  constructor(number, isUsd = false) {
     this.isNegative = (number >= 0 ? false : true);
     this.number = this.isNegative ? String(number).slice(1) : number;
+    this.isUsd = isUsd;
 
-    this.units = ['', 'un', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve'];
+    this.units = ['cero', 'un', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve'];
     this.teens = ['diez', 'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis'];
     this.tens = ['treinta', 'cuarenta', 'cincuenta', 'sesenta', 'setenta', 'ochenta', 'noventa'];
     this.scaleSingle = ['millón', 'billón', 'trillón', 'cuatrillón', 'quintillón', 'sextillón', 'septillón', 'octillón', 'nonillón', 'decillón'];
@@ -41,7 +42,7 @@ class NumberConverter {
   }
 
   getUnit(number) {
-    if (number === 0) return this.units[0];
+    if (number === '0') return this.units[0];
     return this.units[number];
   }
 
@@ -106,7 +107,22 @@ class NumberConverter {
       }
     });
     if (supGroup.length > 0) result.push(supGroup.reverse());
+    return result.reverse();
+  }
 
+  splitThousandsGrupsUsd(number) {
+    const groups = this.splitPerThousand(number).reverse();
+    const lastItem = groups.shift();
+    const result = [];
+
+    let supGroup = [];
+    for (let item of groups) {
+      supGroup.push(item);
+      result.push(supGroup);
+      supGroup = [];
+    }
+    if (supGroup.length > 0) result.push(supGroup);
+    if (result.length > 0) result[0].push(lastItem); else result.push([lastItem]);
     return result.reverse();
   }
 
@@ -117,7 +133,7 @@ class NumberConverter {
   getGroupText(group) {
     if (group.length === 1) {
       const text = this.getGroup(group[0]);
-      return this.isEmptyGroup(group[0]) ? '' : text;
+      return this.isEmptyGroup(group[0]) ? this.units[0] : text;
     }
     if (group.length === 2) {
       if (this.isEmptyGroup(group[0]) && this.isEmptyGroup(group[1])) return '';
@@ -157,6 +173,8 @@ class NumberConverter {
   }
 
   convert() {
-    return this.getScaleText(this.splitThousandsGrups(this.number));
+    return this.getScaleText(
+      (this.isUsd ? this.splitThousandsGrupsUsd(this.number) : this.splitThousandsGrups(this.number))
+    );
   }
 }
