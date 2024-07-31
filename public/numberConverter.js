@@ -166,7 +166,7 @@ class NumberConverter {
       let scalaItem = {};
       scalaItem.convert = this.getGroupText(item);
       scalaItem.scale = (scaleIndex > -1) ? (scalaItem.convert === this.units[1] ? this.scaleSingle[scaleIndex] : this.scalePlural[scaleIndex]) : undefined;
-      if (scalaItem.convert !== '') scaleData.push(scalaItem);
+      if (scalaItem.convert !== this.units[0] || scaleData.length === 0) scaleData.push(scalaItem);
       scaleIndex++;
     }
     return scaleData.reverse();
